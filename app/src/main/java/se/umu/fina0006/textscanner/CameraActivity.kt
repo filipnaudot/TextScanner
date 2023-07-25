@@ -3,14 +3,13 @@ package se.umu.fina0006.textscanner
 import android.Manifest
 import android.content.ContentValues
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageCapture
-import androidx.camera.video.Recorder
-import androidx.camera.video.Recording
-import androidx.camera.video.VideoCapture
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import se.umu.fina0006.textscanner.databinding.ActivityCameraBinding
@@ -25,12 +24,10 @@ import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
-import androidx.camera.video.FallbackStrategy
-import androidx.camera.video.MediaStoreOutputOptions
-import androidx.camera.video.Quality
-import androidx.camera.video.QualitySelector
-import androidx.camera.video.VideoRecordEvent
 import androidx.core.content.PermissionChecker
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -44,8 +41,8 @@ typealias LumaListener = (luma: Double) -> Unit
 class CameraActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityCameraBinding
     private var imageCapture: ImageCapture? = null
-    private var videoCapture: VideoCapture<Recorder>? = null
-    private var recording: Recording? = null
+    //private var videoCapture: VideoCapture<Recorder>? = null
+    //private var recording: Recording? = null
     private lateinit var cameraExecutor: ExecutorService
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,7 +81,62 @@ class CameraActivity : AppCompatActivity() {
             }
         }
 
+    private fun takePhoto() {
+        // Get a stable reference of the modifiable image capture use case
+        val imageCapture = imageCapture ?: return
 
+        // Set up image capture listener, which is triggered after the photo has been taken
+        imageCapture.takePicture(
+            ContextCompat.getMainExecutor(this),
+            object : ImageCapture.OnImageCapturedCallback() {
+                override fun onCaptureSuccess(image: ImageProxy) {
+                    // Get the captured image as a ByteBuffer
+                    val buffer = image.planes[0].buffer
+                    val data = ByteArray(buffer.remaining())
+                    buffer.get(data)
+
+                    // Convert the ByteBuffer to a Bitmap (optional, you can also use the ByteBuffer directly)
+                    val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
+
+                    // Close the image proxy to release resources
+                    image.close()
+
+                    // Process the captured image with ML Kit's text recognizer
+                    processImageWithMLKit(bitmap)
+                }
+
+                override fun onError(exception: ImageCaptureException) {
+                    Log.e(TAG, "Photo capture failed: ${exception.message}", exception)
+                }
+            }
+        )
+    }
+
+    private fun processImageWithMLKit(bitmap: Bitmap) {
+        // Create an InputImage from Bitmap
+        val image = InputImage.fromBitmap(bitmap, 0)
+
+        // Process the image with MLKit
+        val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+        recognizer.process(image)
+            .addOnSuccessListener { text ->
+                if (text != null && text.textBlocks.isNotEmpty()) {
+                    for (block in text.textBlocks) {
+                        val blockText = block.text
+                        Log.d(TAG, "Text Block: $blockText")
+                    }
+                } else {
+                    Log.d(TAG, "No text detected.")
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Text recognition failed: ${e.message}", e)
+            }
+    }
+
+
+
+    /*
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
 
@@ -106,8 +158,7 @@ class CameraActivity : AppCompatActivity() {
                 contentValues)
             .build()
 
-        // Set up image capture listener, which is triggered after photo has
-        // been taken
+        // Set up image capture listener, which is triggered after photo has been taken
         imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(this),
@@ -124,7 +175,7 @@ class CameraActivity : AppCompatActivity() {
             }
         )
     }
-
+     */
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
