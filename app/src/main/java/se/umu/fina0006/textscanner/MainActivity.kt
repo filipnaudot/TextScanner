@@ -1,8 +1,7 @@
 package se.umu.fina0006.textscanner
 
-import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
@@ -17,6 +16,15 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private val pictureActivity = registerForActivityResult(CameraActivity.TakePicture()) { textBlocks: ArrayList<String>? ->
+        if (textBlocks != null) {
+            for (block : String in textBlocks) {
+                Log.d(TAG, "Text Block: $block")
+            }
+        } else {
+            // Canceled
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -31,9 +39,10 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        binding.fab.setOnClickListener { view ->
-            val intent: Intent = Intent(this, CameraActivity::class.java)
-            startActivity(intent)
+        binding.fab.setOnClickListener {
+            //val intent = Intent(this, CameraActivity::class.java)
+            //startActivity(intent)
+            pictureActivity.launch(Unit)
         }
     }
 
@@ -57,5 +66,9 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
+    }
+
+    companion object {
+        private const val TAG = "TextScannerMainActivity"
     }
 }

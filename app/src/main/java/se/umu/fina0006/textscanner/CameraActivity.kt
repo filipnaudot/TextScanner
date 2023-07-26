@@ -1,7 +1,10 @@
 package se.umu.fina0006.textscanner
 
 import android.Manifest
+import android.app.Activity
 import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -21,6 +24,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.core.Preview
 import androidx.camera.core.CameraSelector
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
@@ -28,6 +32,7 @@ import androidx.core.content.PermissionChecker
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import java.io.File
 import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -39,6 +44,7 @@ typealias LumaListener = (luma: Double) -> Unit
  * Link: https://developer.android.com/codelabs/camerax-getting-started#0
  */
 class CameraActivity : AppCompatActivity() {
+    var scannedTextBlocks: ArrayList<String> = arrayListOf()
     private lateinit var viewBinding: ActivityCameraBinding
     private var imageCapture: ImageCapture? = null
     //private var videoCapture: VideoCapture<Recorder>? = null
@@ -90,48 +96,49 @@ class CameraActivity : AppCompatActivity() {
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageCapturedCallback() {
                 override fun onCaptureSuccess(image: ImageProxy) {
-                    // Get the captured image as a ByteBuffer
                     val buffer = image.planes[0].buffer
                     val data = ByteArray(buffer.remaining())
                     buffer.get(data)
 
-                    // Convert the ByteBuffer to a Bitmap (optional, you can also use the ByteBuffer directly)
+                    // Convert the ByteBuffer to a Bitmap
                     val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
 
-                    // Close the image proxy to release resources
                     image.close()
 
-                    // Process the captured image with ML Kit's text recognizer
                     processImageWithMLKit(bitmap)
                 }
-
                 override fun onError(exception: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exception.message}", exception)
+                    setResult(Activity.RESULT_CANCELED)
+                    finish()
                 }
             }
         )
     }
 
     private fun processImageWithMLKit(bitmap: Bitmap) {
-        // Create an InputImage from Bitmap
         val image = InputImage.fromBitmap(bitmap, 0)
-
         // Process the image with MLKit
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-        recognizer.process(image)
-            .addOnSuccessListener { text ->
-                if (text != null && text.textBlocks.isNotEmpty()) {
-                    for (block in text.textBlocks) {
-                        val blockText = block.text
-                        Log.d(TAG, "Text Block: $blockText")
-                    }
-                } else {
-                    Log.d(TAG, "No text detected.")
+        recognizer.process(image).addOnSuccessListener { text ->
+            if (text != null && text.textBlocks.isNotEmpty()) {
+                for (block in text.textBlocks) {
+                    scannedTextBlocks.add(block.text)
+                    Log.d(TAG, "Text Block: ${block.text}")
                 }
+            } else {
+                Log.d(TAG, "No text detected.")
             }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "Text recognition failed: ${e.message}", e)
-            }
+
+            val resultIntent = Intent()
+            resultIntent.putStringArrayListExtra("scannedTextBlocks", scannedTextBlocks)
+            setResult(Activity.RESULT_OK, resultIntent)
+            finish()
+        }.addOnFailureListener { e ->
+            Log.e(TAG, "Text recognition failed: ${e.message}", e)
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
     }
 
 
@@ -218,9 +225,20 @@ class CameraActivity : AppCompatActivity() {
         cameraExecutor.shutdown()
     }
 
+    class TakePicture : ActivityResultContract<Unit, ArrayList<String>?>() {
+        override fun createIntent(context: Context, input: Unit): Intent {
+            return Intent(context, CameraActivity::class.java)
+        }
+        override fun parseResult(resultCode: Int, intent: Intent?): ArrayList<String>? {
+            if (resultCode == Activity.RESULT_OK && intent != null) {
+                return intent.getStringArrayListExtra("scannedTextBlocks")
+            }
+            return null
+        }
+    }
+
     companion object {
         private const val TAG = "TextScannerCameraActivity"
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private val REQUIRED_PERMISSIONS =
             mutableListOf (
                 Manifest.permission.CAMERA,
