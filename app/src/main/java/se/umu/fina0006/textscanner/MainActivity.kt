@@ -10,19 +10,25 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.os.bundleOf
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import se.umu.fina0006.textscanner.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    private val pictureActivity = registerForActivityResult(CameraActivity.TakePicture()) { textBlocks: ArrayList<String>? ->
-        if (textBlocks != null) {
-            for (block : String in textBlocks) {
-                Log.d(TAG, "Text Block: $block")
-            }
-        } else {
-            // Canceled
+    private val pictureActivity = registerForActivityResult(CameraActivity.TakePicture())
+    { text: String? ->
+        Log.d(TAG, "TEXT: $text")
+
+        // Navigate to SecondFragment and pass the scanned text as an argument
+        if (!text.isNullOrEmpty()) {
+            val bundle = bundleOf("scannedText" to text)
+            findNavController(R.id.nav_host_fragment_content_main)
+                .navigate(R.id.action_FirstFragment_to_SecondFragment, bundle)
         }
     }
 
@@ -64,8 +70,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
     companion object {

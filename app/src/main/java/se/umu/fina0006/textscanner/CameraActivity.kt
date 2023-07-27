@@ -45,10 +45,9 @@ typealias LumaListener = (luma: Double) -> Unit
  */
 class CameraActivity : AppCompatActivity() {
     var scannedTextBlocks: ArrayList<String> = arrayListOf()
+    var scannedText: String = ""
     private lateinit var viewBinding: ActivityCameraBinding
     private var imageCapture: ImageCapture? = null
-    //private var videoCapture: VideoCapture<Recorder>? = null
-    //private var recording: Recording? = null
     private lateinit var cameraExecutor: ExecutorService
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,7 +122,7 @@ class CameraActivity : AppCompatActivity() {
         recognizer.process(image).addOnSuccessListener { text ->
             if (text != null && text.textBlocks.isNotEmpty()) {
                 for (block in text.textBlocks) {
-                    scannedTextBlocks.add(block.text)
+                    scannedText += "${block.text}\n"
                     Log.d(TAG, "Text Block: ${block.text}")
                 }
             } else {
@@ -131,7 +130,7 @@ class CameraActivity : AppCompatActivity() {
             }
 
             val resultIntent = Intent()
-            resultIntent.putStringArrayListExtra("scannedTextBlocks", scannedTextBlocks)
+            resultIntent.putExtra("scannedText", scannedText)
             setResult(Activity.RESULT_OK, resultIntent)
             finish()
         }.addOnFailureListener { e ->
@@ -225,15 +224,15 @@ class CameraActivity : AppCompatActivity() {
         cameraExecutor.shutdown()
     }
 
-    class TakePicture : ActivityResultContract<Unit, ArrayList<String>?>() {
+    class TakePicture : ActivityResultContract<Unit, String?>() {
         override fun createIntent(context: Context, input: Unit): Intent {
             return Intent(context, CameraActivity::class.java)
         }
-        override fun parseResult(resultCode: Int, intent: Intent?): ArrayList<String>? {
+        override fun parseResult(resultCode: Int, intent: Intent?): String? {
             if (resultCode == Activity.RESULT_OK && intent != null) {
-                return intent.getStringArrayListExtra("scannedTextBlocks")
+                return intent.getStringExtra("scannedText")
             }
-            return null
+            return ""
         }
     }
 
