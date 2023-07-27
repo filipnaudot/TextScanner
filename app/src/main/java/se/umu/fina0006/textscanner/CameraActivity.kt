@@ -44,8 +44,7 @@ typealias LumaListener = (luma: Double) -> Unit
  * Link: https://developer.android.com/codelabs/camerax-getting-started#0
  */
 class CameraActivity : AppCompatActivity() {
-    var scannedTextBlocks: ArrayList<String> = arrayListOf()
-    var scannedText: String = ""
+    private var scannedText: String = ""
     private lateinit var viewBinding: ActivityCameraBinding
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
