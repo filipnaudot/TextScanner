@@ -29,8 +29,6 @@ class SecondFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val scannedText = arguments?.getString("scannedText")
-        Log.d(TAG, "Scanned Text: $scannedText")
-
         binding.textviewScanDetail.text = scannedText
     }
 
