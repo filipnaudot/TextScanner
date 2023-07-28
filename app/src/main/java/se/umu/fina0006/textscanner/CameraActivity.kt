@@ -2,7 +2,6 @@ package se.umu.fina0006.textscanner
 
 import android.Manifest
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,10 +9,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageCapture
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import se.umu.fina0006.textscanner.databinding.ActivityCameraBinding
 import java.util.concurrent.ExecutorService
@@ -25,19 +22,12 @@ import androidx.camera.core.Preview
 import androidx.camera.core.CameraSelector
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
-import androidx.core.content.PermissionChecker
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
-import java.io.File
-import java.nio.ByteBuffer
-import java.text.SimpleDateFormat
-import java.util.Locale
 
-typealias LumaListener = (luma: Double) -> Unit
 
 /**
  * CameraActivity was inspired by Android's "Getting Started with CameraX" tutorial.
