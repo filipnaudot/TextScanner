@@ -9,24 +9,24 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.ImageCapture
-import androidx.core.content.ContextCompat
-import se.umu.fina0006.textscanner.databinding.ActivityCameraBinding
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.core.Preview
-import androidx.camera.core.CameraSelector
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.content.ContextCompat
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import se.umu.fina0006.textscanner.databinding.ActivityCameraBinding
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 
 /**
@@ -38,6 +38,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityCameraBinding
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
+    private var flashMode: Int = ImageCapture.FLASH_MODE_OFF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -184,7 +185,9 @@ class CameraActivity : AppCompatActivity() {
                     it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
                 }
 
-            imageCapture = ImageCapture.Builder().build()
+            imageCapture = ImageCapture.Builder().setFlashMode(flashMode).build()
+
+            setFlashModeListener()
 
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
@@ -196,6 +199,23 @@ class CameraActivity : AppCompatActivity() {
                 Log.e(TAG, "Use case binding failed", exc)
             }
         }, ContextCompat.getMainExecutor(this))
+    }
+
+    private fun setFlashModeListener() {
+        viewBinding.buttonFlash.setOnClickListener {
+            when (flashMode) {
+                ImageCapture.FLASH_MODE_OFF -> {
+                    flashMode = ImageCapture.FLASH_MODE_ON
+                    viewBinding.buttonFlash.text = getString(R.string.flash_on)
+                }
+                ImageCapture.FLASH_MODE_ON -> {
+                    flashMode = ImageCapture.FLASH_MODE_OFF
+                    viewBinding.buttonFlash.text = getString(R.string.flash_off)
+                }
+            }
+            // Update flash mode
+            imageCapture?.flashMode = flashMode
+        }
     }
 
 
