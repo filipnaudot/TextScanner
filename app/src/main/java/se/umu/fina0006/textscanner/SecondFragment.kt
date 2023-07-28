@@ -40,7 +40,7 @@ class SecondFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val scannedText = arguments?.getString("scannedText")
-        binding.textviewScanDetail.text = scannedText
+        binding.textviewScanDetail.setText(scannedText)
 
 
         // Copy button
