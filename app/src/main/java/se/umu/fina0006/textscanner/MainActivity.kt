@@ -2,24 +2,23 @@ package se.umu.fina0006.textscanner
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import androidx.core.os.bundleOf
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
-import androidx.navigation.fragment.findNavController
 import se.umu.fina0006.textscanner.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
     private val pictureActivity = registerForActivityResult(CameraActivity.TakePicture())
     { text: String? ->
         Log.d(TAG, "TEXT: $text")
@@ -38,17 +37,35 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setSupportActionBar(binding.toolbar)
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
+        setListeners()
+    }
+
+    private fun setListeners() {
+        setFabListener()
+        setDestinationChangedListener()
+    }
+
+    private fun setFabListener() {
         binding.fab.setOnClickListener {
             //val intent = Intent(this, CameraActivity::class.java)
             //startActivity(intent)
             pictureActivity.launch(Unit)
+        }
+    }
+
+    private fun setDestinationChangedListener() {
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.FirstFragment -> binding.fab.show()
+                R.id.SecondFragment -> binding.fab.hide()
+                else -> binding.fab.hide()
+            }
         }
     }
 
