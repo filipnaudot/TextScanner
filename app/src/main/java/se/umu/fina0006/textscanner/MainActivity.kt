@@ -53,8 +53,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun setFabListener() {
         binding.fab.setOnClickListener {
-            //val intent = Intent(this, CameraActivity::class.java)
-            //startActivity(intent)
             pictureActivity.launch(Unit)
         }
     }
