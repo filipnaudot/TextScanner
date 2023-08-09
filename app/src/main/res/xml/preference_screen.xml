@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <SwitchPreferenceCompat
-        android:key="Clipboard"
+        android:key="CopyToClipboard"
         android:title="Copy scanned text to clipboard"/>
-
-    <Preference
-        android:key="feedback"
-        android:title="Send feedback"
-        android:summary="Report technical issues or suggest new features"/>
-
+    <SwitchPreferenceCompat
+        android:key="SaveImage"
+        android:title="Save image to gallery"/>
 </PreferenceScreen>
