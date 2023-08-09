@@ -14,9 +14,6 @@
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/SecondFragment" />
-        <action
-            android:id="@+id/action_FirstFragment_to_SettingsFragment"
-            app:destination="@id/SettingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
