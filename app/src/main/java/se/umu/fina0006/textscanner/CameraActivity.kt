@@ -117,6 +117,7 @@ class CameraActivity : AppCompatActivity() {
                 }
             } else {
                 Log.d(TAG, "No text detected.")
+                Toast.makeText(this, "No text detected", Toast.LENGTH_LONG).show()
             }
 
             val resultIntent = Intent()
