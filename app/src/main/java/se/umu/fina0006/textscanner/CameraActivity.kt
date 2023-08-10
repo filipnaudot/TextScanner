@@ -131,8 +131,6 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-
-
     /*
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
@@ -218,7 +216,6 @@ class CameraActivity : AppCompatActivity() {
             imageCapture?.flashMode = flashMode
         }
     }
-
 
     private fun requestPermissions() {
         activityResultLauncher.launch(REQUIRED_PERMISSIONS)
