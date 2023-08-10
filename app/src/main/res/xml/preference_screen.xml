@@ -3,6 +3,8 @@
     <SwitchPreferenceCompat
         android:key="CopyToClipboard"
         android:title="Copy scanned text to clipboard"/>
+
+
     <SwitchPreferenceCompat
         android:key="SaveImage"
         android:title="Save image to gallery"/>

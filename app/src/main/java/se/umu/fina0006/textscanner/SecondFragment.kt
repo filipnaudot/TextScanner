@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import se.umu.fina0006.textscanner.databinding.FragmentSecondBinding
 
 
@@ -36,8 +37,11 @@ class SecondFragment : Fragment() {
 
 
         // Copy button
-        // if setting.autoCopy
-        copyToPrimaryClip(scannedText)
+        val sharedPreferences = activity?.let { PreferenceManager.getDefaultSharedPreferences(it) }
+        val autoCopy = sharedPreferences?.getBoolean("CopyToClipboard", false)
+        if (autoCopy == true) {
+            copyToPrimaryClip(scannedText)
+        }
     }
 
     override fun onDestroyView() {
