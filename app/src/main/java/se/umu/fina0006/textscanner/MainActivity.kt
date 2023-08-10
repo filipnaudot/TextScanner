@@ -22,7 +22,6 @@ class MainActivity : AppCompatActivity() {
     private val pictureActivity = registerForActivityResult(CameraActivity.TakePicture())
     { text: String? ->
         Log.d(TAG, "TEXT: $text")
-
         // Navigate to SecondFragment and pass the scanned text as an argument
         if (!text.isNullOrEmpty()) {
             val bundle = bundleOf("scannedText" to text)
