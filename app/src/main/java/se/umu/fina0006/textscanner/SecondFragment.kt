@@ -38,7 +38,7 @@ class SecondFragment : Fragment() {
         binding.textviewScanDetail.setText(scannedText)
 
         binding.saveButton.setOnClickListener {
-            var text = binding.textviewScanDetail.text.toString()
+            val text = binding.textviewScanDetail.text.toString()
             sharedViewModel.scanStorage.value = text
             parentFragmentManager.popBackStackImmediate()
         }
