@@ -41,7 +41,7 @@ class FirstFragment : Fragment() {
         binding.scanResultList.adapter = adapter
 
         sharedViewModel.scanStorage.observe(viewLifecycleOwner) { newText ->
-            scanResultList.add(newText)
+            scanResultList.add(0, newText)
             adapter.notifyDataSetChanged()
             storeScanResultToJson()
         }
