@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
@@ -15,10 +16,10 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import se.umu.fina0006.textscanner.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    private val sharedViewModel: SharedScanResultViewModel by viewModels()
     private val pictureActivity = registerForActivityResult(CameraActivity.TakePicture())
     { text: String? ->
         Log.d(TAG, "TEXT: $text")

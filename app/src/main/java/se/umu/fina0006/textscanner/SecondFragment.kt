@@ -10,12 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
 import se.umu.fina0006.textscanner.databinding.FragmentSecondBinding
 
 
 class SecondFragment : Fragment() {
     private var _binding: FragmentSecondBinding? = null
+    private val sharedViewModel: SharedScanResultViewModel by activityViewModels()
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -35,6 +37,7 @@ class SecondFragment : Fragment() {
         val scannedText = arguments?.getString("scannedText")
         binding.textviewScanDetail.setText(scannedText)
 
+        sharedViewModel.scanStorage.value = scannedText
 
         // Copy button
         val sharedPreferences = activity?.let { PreferenceManager.getDefaultSharedPreferences(it) }

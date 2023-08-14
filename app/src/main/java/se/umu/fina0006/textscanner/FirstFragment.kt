@@ -6,12 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.fragment.app.activityViewModels
 import se.umu.fina0006.textscanner.databinding.FragmentFirstBinding
 
 
 class FirstFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null
+    private val sharedViewModel: SharedScanResultViewModel by activityViewModels()
+    private val scanResultList = mutableListOf<String>()
+    private lateinit var adapter: ArrayAdapter<String>
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -29,9 +33,13 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val data = listOf("Scan1", "Scan2", "Scan3", "Scan4", "Scan5", "Scan6")
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, data)
+        adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, scanResultList)
         binding.scanResultList.adapter = adapter
+
+        sharedViewModel.scanStorage.observe(viewLifecycleOwner) { newText ->
+            scanResultList.add(newText)
+            adapter.notifyDataSetChanged()
+        }
     }
 
     override fun onDestroyView() {
