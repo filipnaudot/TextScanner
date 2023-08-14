@@ -130,7 +130,7 @@ class CameraActivity : AppCompatActivity() {
             finish()
         }
     }
-    
+
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 

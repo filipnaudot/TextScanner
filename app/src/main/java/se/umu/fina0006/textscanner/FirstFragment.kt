@@ -23,6 +23,16 @@ class FirstFragment : Fragment() {
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        sharedViewModel.scanStorage.observe(this) { newText ->
+            scanResultList.add(0, newText)
+            adapter.notifyDataSetChanged()
+            storeScanResultToJson()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,12 +49,6 @@ class FirstFragment : Fragment() {
         readScanResultFromJson()
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, scanResultList)
         binding.scanResultList.adapter = adapter
-
-        sharedViewModel.scanStorage.observe(viewLifecycleOwner) { newText ->
-            scanResultList.add(0, newText)
-            adapter.notifyDataSetChanged()
-            storeScanResultToJson()
-        }
     }
 
     private fun readScanResultFromJson() {

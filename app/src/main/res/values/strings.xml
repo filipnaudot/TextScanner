@@ -30,4 +30,6 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="capture_photo">Capture photo</string>
     <string name="new_scan">New scan</string>
+    <string name="save">Save</string>
+    <string name="edit_scanned_text">Edit scanned text</string>
 </resources>

@@ -37,7 +37,11 @@ class SecondFragment : Fragment() {
         val scannedText = arguments?.getString("scannedText")
         binding.textviewScanDetail.setText(scannedText)
 
-        sharedViewModel.scanStorage.value = scannedText
+        binding.saveButton.setOnClickListener {
+            var text = binding.textviewScanDetail.text.toString()
+            sharedViewModel.scanStorage.value = text
+            parentFragmentManager.popBackStackImmediate()
+        }
 
         // Copy button
         val sharedPreferences = activity?.let { PreferenceManager.getDefaultSharedPreferences(it) }
