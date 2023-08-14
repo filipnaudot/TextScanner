@@ -13,7 +13,7 @@ import se.umu.fina0006.textscanner.databinding.FragmentFirstBinding
 class FirstFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null
-    private val sharedViewModel: SharedScanResultViewModel by activityViewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private val scanResultList = mutableListOf<String>()
     private lateinit var adapter: ArrayAdapter<String>
 
