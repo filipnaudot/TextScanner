@@ -1,5 +1,6 @@
 package se.umu.fina0006.textscanner
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -16,39 +17,43 @@ import java.io.IOException
 
 
 class FirstFragment : Fragment() {
-
     private var _binding: FragmentFirstBinding? = null
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var scanResultList = mutableListOf<String>()
     private lateinit var adapter: ArrayAdapter<String>
-
     private val binding get() = _binding!! // This property is only valid between onCreateView and onDestroyView.
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        sharedViewModel.scanStorage.observe(this) { newText ->
-            scanResultList.add(0, newText)
-            adapter.notifyDataSetChanged()
-            storeScanResultToJson()
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        initScanResultList()
+        sharedViewModel.scanStorage.observe(viewLifecycleOwner) { newText ->
+            if(newText != sharedViewModel.lastEmittedValue) {
+                addNewScan(newText)
+            }
+            sharedViewModel.lastEmittedValue = newText
+        }
         setListListener()
+        initScanResultList()
+    }
+
+    private fun addNewScan(text: String) {
+        scanResultList.add(0, text)
+        adapter.notifyDataSetChanged()
+        storeScanResultToJson()
+    }
+
+    private fun deleteScanAtIndex(index: Int) {
+        scanResultList.removeAt(index)
+        adapter.notifyDataSetChanged()
+        storeScanResultToJson()
     }
 
     private fun initScanResultList() {
@@ -63,8 +68,22 @@ class FirstFragment : Fragment() {
             val bundle = bundleOf(
                 "scannedText" to clickedItem,
                 "isSaved" to true,
-                )
+                "index" to position,
+            )
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment, bundle)
+        }
+
+        binding.scanResultList.setOnItemLongClickListener { _, _, position, _ ->
+            AlertDialog.Builder(context)
+                .setTitle("Delete scan")
+                .setMessage("Are you sure you want to delete this scan?")
+                .setPositiveButton("Delete") { _, _ ->
+                    deleteScanAtIndex(position)
+                }
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show()
+            true
         }
     }
 
