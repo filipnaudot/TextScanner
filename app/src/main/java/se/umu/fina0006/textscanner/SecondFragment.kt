@@ -42,7 +42,7 @@ class SecondFragment : Fragment() {
             sharedViewModel.scanStorage.value = text
             parentFragmentManager.popBackStackImmediate()
         }
-        
+
         val sharedPreferences = activity?.let { PreferenceManager.getDefaultSharedPreferences(it) }
         val autoCopy = sharedPreferences?.getBoolean("CopyToClipboard", false)
         if (autoCopy == true) {

@@ -17,6 +17,7 @@ import se.umu.fina0006.textscanner.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private var toolbarMenuInitialized = false
     private lateinit var navController: NavController
     private val pictureActivity = registerForActivityResult(CameraActivity.TakePicture())
     { text: String? ->
@@ -55,14 +56,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showToolbarMenu(status: Boolean) {
+        val menu = binding.toolbar.menu
+        val menuItem = menu.findItem(R.id.action_settings)
+        menuItem.isVisible = status
+    }
+
     private fun setDestinationChangedListener() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.FirstFragment -> binding.fab.show()
-                R.id.SecondFragment -> binding.fab.hide()
-                else -> binding.fab.hide()
+            if (toolbarMenuInitialized) {
+                when (destination.id) {
+                    R.id.FirstFragment -> {
+                        binding.fab.show()
+                        showToolbarMenu(true)
+                    }
+                    R.id.SecondFragment -> {
+                        binding.fab.hide()
+                        showToolbarMenu(true)
+                    }
+                    R.id.SettingsFragment -> showToolbarMenu(false)
+                    else -> binding.fab.hide()
+                }
             }
         }
+        toolbarMenuInitialized = true
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
