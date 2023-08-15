@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.navigation.fragment.findNavController
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import org.json.JSONArray
 import se.umu.fina0006.textscanner.databinding.FragmentFirstBinding
@@ -20,8 +22,7 @@ class FirstFragment : Fragment() {
     private var scanResultList = mutableListOf<String>()
     private lateinit var adapter: ArrayAdapter<String>
 
-    // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding!!
+    private val binding get() = _binding!! // This property is only valid between onCreateView and onDestroyView.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,9 +47,22 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initScanResultList()
+        setListListener()
+    }
+
+    private fun initScanResultList() {
         readScanResultFromJson()
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, scanResultList)
         binding.scanResultList.adapter = adapter
+    }
+
+    private fun setListListener() {
+        binding.scanResultList.setOnItemClickListener { _, _, position, _ ->
+            val clickedItem = scanResultList[position] // Get the clicked item data
+            val bundle = bundleOf("scannedText" to clickedItem)
+            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment, bundle)
+        }
     }
 
     private fun readScanResultFromJson() {
