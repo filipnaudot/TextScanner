@@ -60,7 +60,10 @@ class FirstFragment : Fragment() {
     private fun setListListener() {
         binding.scanResultList.setOnItemClickListener { _, _, position, _ ->
             val clickedItem = scanResultList[position] // Get the clicked item data
-            val bundle = bundleOf("scannedText" to clickedItem)
+            val bundle = bundleOf(
+                "scannedText" to clickedItem,
+                "isSaved" to true,
+                )
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment, bundle)
         }
     }

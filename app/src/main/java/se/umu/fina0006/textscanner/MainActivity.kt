@@ -24,7 +24,10 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "TEXT: $text")
         // Navigate to SecondFragment and pass the scanned text as an argument
         if (!text.isNullOrEmpty()) {
-            val bundle = bundleOf("scannedText" to text)
+            val bundle = bundleOf(
+                "scannedText" to text,
+                "isSaved" to false,
+            )
             findNavController(R.id.nav_host_fragment_content_main)
                 .navigate(R.id.action_FirstFragment_to_SecondFragment, bundle)
         }
