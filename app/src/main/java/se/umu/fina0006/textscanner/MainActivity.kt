@@ -22,19 +22,6 @@ class MainActivity : AppCompatActivity() {
     private val pictureActivity = registerForActivityResult(CameraActivity.TakePicture())
     { text: String? -> launchEditFragment(text) }
 
-    private fun launchEditFragment(text: String?) {
-        Log.d(TAG, "TEXT: $text")
-        // Navigate to SecondFragment and pass the scanned text as an argument
-        if (!text.isNullOrEmpty()) {
-            val bundle = bundleOf(
-                "scannedText" to text,
-                "isSaved" to false,
-            )
-            findNavController(R.id.nav_host_fragment_content_main)
-                .navigate(R.id.action_FirstFragment_to_SecondFragment, bundle)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
@@ -50,6 +37,19 @@ class MainActivity : AppCompatActivity() {
         setListeners()
     }
 
+    private fun launchEditFragment(text: String?) {
+        Log.d(TAG, "TEXT: $text")
+        // Navigate to SecondFragment and pass the scanned text as an argument
+        if (!text.isNullOrEmpty()) {
+            val bundle = bundleOf(
+                "scannedText" to text,
+                "isSaved" to false,
+            )
+            findNavController(R.id.nav_host_fragment_content_main)
+                .navigate(R.id.action_FirstFragment_to_SecondFragment, bundle)
+        }
+    }
+    
     private fun setListeners() {
         setFabListener()
         setDestinationChangedListener()
