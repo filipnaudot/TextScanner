@@ -3,9 +3,4 @@
     <SwitchPreferenceCompat
         android:key="CopyToClipboard"
         android:title="Auto-Copy to Clipboard"/>
-
-
-    <SwitchPreferenceCompat
-        android:key="SaveImage"
-        android:title="Save image to gallery"/>
 </PreferenceScreen>
