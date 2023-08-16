@@ -20,7 +20,9 @@ class MainActivity : AppCompatActivity() {
     private var toolbarMenuInitialized = false
     private lateinit var navController: NavController
     private val pictureActivity = registerForActivityResult(CameraActivity.TakePicture())
-    { text: String? ->
+    { text: String? -> launchEditFragment(text) }
+
+    private fun launchEditFragment(text: String?) {
         Log.d(TAG, "TEXT: $text")
         // Navigate to SecondFragment and pass the scanned text as an argument
         if (!text.isNullOrEmpty()) {
