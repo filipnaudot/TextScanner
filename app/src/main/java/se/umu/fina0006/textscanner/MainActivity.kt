@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                 .navigate(R.id.action_FirstFragment_to_SecondFragment, bundle)
         }
     }
-    
+
     private fun setListeners() {
         setFabListener()
         setDestinationChangedListener()
