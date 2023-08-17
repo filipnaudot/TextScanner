@@ -32,6 +32,8 @@ import java.util.concurrent.Executors
 /**
  * CameraActivity was inspired by Android's "Getting Started with CameraX" tutorial.
  * Link: https://developer.android.com/codelabs/camerax-getting-started#0
+ * This class handle the CameraX instance but also contains function to analyze
+ * in memory bitmap with MLKit.
  */
 class CameraActivity : AppCompatActivity() {
     private var scannedText: String = ""
@@ -39,25 +41,6 @@ class CameraActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
     private var flashMode: Int = ImageCapture.FLASH_MODE_OFF
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewBinding = ActivityCameraBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
-
-        if (allPermissionsGranted()) {
-            startCamera()
-        } else {
-            requestPermissions()
-        }
-
-        viewBinding.imageCaptureButton.setOnClickListener {
-            takePhoto()
-        }
-
-        cameraExecutor = Executors.newSingleThreadExecutor()
-    }
-
     private val activityResultLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions())
@@ -76,6 +59,39 @@ class CameraActivity : AppCompatActivity() {
             }
         }
 
+    /**
+     * Initializes the user interface using view binding, checks for necessary permissions,
+     * and initializes the camera if permissions are granted.
+     * Also sets up a click listener on the image capture button to
+     * take a photo when clicked. Lastly, initializes a single-threaded executor for camera
+     * operations.
+     *
+     * @param savedInstanceState The saved instance state bundle.
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewBinding = ActivityCameraBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
+
+        if (allPermissionsGranted()) {
+            startCamera()
+        } else {
+            requestPermissions()
+        }
+
+        viewBinding.imageCaptureButton.setOnClickListener {
+            takePhoto()
+        }
+
+        cameraExecutor = Executors.newSingleThreadExecutor()
+    }
+
+    /**
+     * Initiates the process of taking a photo. Retrieves the image capture instance and
+     * sets up an image capture listener that is triggered after the photo has been taken.
+     * On successful image capture, the captured image data is converted into a
+     * Bitmap and processed with ML Kit.
+     */
     private fun takePhoto() {
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
@@ -116,6 +132,13 @@ class CameraActivity : AppCompatActivity() {
         viewBinding.spinner.visibility = View.VISIBLE
     }
 
+    /**
+     * Processes a given Bitmap image using MLKit for text recognition. If text is detected,
+     * each detected text block is appended to the scannedText list and logged.
+     * If no text is detected a toast message is displayed.
+     *
+     * @param bitmap The input Bitmap image to be processed.
+     */
     private fun processImageWithMLKit(bitmap: Bitmap) {
         val image = InputImage.fromBitmap(bitmap, 0)
         // Process the image with MLKit
@@ -142,6 +165,10 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Initializes and starts the camera using CameraX. Retrieves the camera provider instance
+     * asynchronously and sets up camera use cases like preview and image capture.
+     */
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
@@ -170,6 +197,9 @@ class CameraActivity : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
     }
 
+    /**
+     * Set the listener for flash button that controls the flash mode of the camera.
+     */
     private fun setFlashModeListener() {
         viewBinding.buttonFlash.setOnClickListener {
             when (flashMode) {
@@ -187,20 +217,28 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Requests the necessary permissions for the application. Launches an activity result
+     * contract to handle permission requests.
+     */
     private fun requestPermissions() {
         activityResultLauncher.launch(REQUIRED_PERMISSIONS)
     }
 
+    /**
+     * Checks if all the required permissions are granted.
+     *
+     * @return true if all required permissions are granted else false.
+     */
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        cameraExecutor.shutdown()
-    }
-
+    /**
+     * An activity result contract class for capturing an image using the camera.
+     * Creates an intent to launch the CameraActivity and handles parsing the result.
+     */
     class TakePicture : ActivityResultContract<Unit, String?>() {
         override fun createIntent(context: Context, input: Unit): Intent {
             return Intent(context, CameraActivity::class.java)
@@ -211,6 +249,14 @@ class CameraActivity : AppCompatActivity() {
             }
             return ""
         }
+    }
+
+    /**
+     * Performs cleanup operations such as shutting down the camera executor to release resources.
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraExecutor.shutdown()
     }
 
     companion object {
