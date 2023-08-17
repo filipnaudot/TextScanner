@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private var toolbarMenuInitialized = false
+    private var fabVisible = true
     private lateinit var navController: NavController
     private val pictureActivity = registerForActivityResult(CameraActivity.TakePicture())
     { text: String? -> launchEditFragment(text) }
@@ -34,7 +35,20 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
+        initFabVisibility(savedInstanceState)
         setListeners()
+    }
+
+    /**
+     * Initiates the visibility of floating action button for new scan.
+     */
+    private fun initFabVisibility(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            fabVisible = savedInstanceState.getBoolean(FAB, false)
+            if(!fabVisible) {
+                binding.fab.hide()
+            }
+        }
     }
 
     /**
@@ -92,14 +106,19 @@ class MainActivity : AppCompatActivity() {
                 when (destination.id) {
                     R.id.FirstFragment -> {
                         binding.fab.show()
+                        fabVisible = true
                         showToolbarMenu(true)
                     }
                     R.id.SecondFragment -> {
                         binding.fab.hide()
+                        fabVisible = false
                         showToolbarMenu(true)
                     }
                     R.id.SettingsFragment -> showToolbarMenu(false)
-                    else -> binding.fab.hide()
+                    else -> {
+                        binding.fab.hide()
+                        fabVisible = false
+                    }
                 }
             }
         }
@@ -140,7 +159,20 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    /**
+     * Called to save the current instance state of the activity before it is destroyed.
+     * In this case used before a configuration change to preserve the correct visibility
+     * for new scan fab.
+     *
+     * @param outState A Bundle in which to place the saved state.
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(FAB, fabVisible)
+    }
+
     companion object {
         private const val TAG = "TextScannerMainActivity"
+        private const val FAB = "fabVisibility"
     }
 }
