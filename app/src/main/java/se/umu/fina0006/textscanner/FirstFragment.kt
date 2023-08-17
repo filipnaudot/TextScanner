@@ -32,6 +32,14 @@ class FirstFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Called when the associated view is created.
+     * Initializes the behavior and interactions for the fragment's UI elements.
+     *
+     * @param view The root view of the fragment.
+     * @param savedInstanceState The saved state of the fragment, if available.
+     */
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sharedViewModel.scanStorage.observe(viewLifecycleOwner) { newText ->
