@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,7 +28,6 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import se.umu.fina0006.textscanner.databinding.ActivityCameraBinding
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-
 
 /**
  * CameraActivity was inspired by Android's "Getting Started with CameraX" tutorial.
@@ -93,7 +93,7 @@ class CameraActivity : AppCompatActivity() {
                     val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
 
                     image.close()
-
+                    setLoading()
                     processImageWithMLKit(bitmap)
                 }
                 override fun onError(exception: ImageCaptureException) {
@@ -103,6 +103,17 @@ class CameraActivity : AppCompatActivity() {
                 }
             }
         )
+    }
+
+    /**
+     * Sets the UI components to a loading state.
+     * Hiding capture and flash buttons while displaying a spinner.
+     */
+    private fun setLoading() {
+        viewBinding.buttonFlash.visibility = View.GONE
+        viewBinding.imageCaptureButton.visibility = View.GONE
+        viewBinding.viewFinder.visibility = View.GONE
+        viewBinding.spinner.visibility = View.VISIBLE
     }
 
     private fun processImageWithMLKit(bitmap: Bitmap) {
