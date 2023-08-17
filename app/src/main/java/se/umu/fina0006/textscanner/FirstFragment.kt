@@ -44,24 +44,40 @@ class FirstFragment : Fragment() {
         initScanResultList()
     }
 
+    /**
+     * Adds a new scanned text to list of scans and notifies
+     * adapter for ListView.
+     */
     private fun addNewScan(text: String) {
         scanResultList.add(0, text)
         adapter.notifyDataSetChanged()
         storeScanResultToJson()
     }
 
+    /**
+     * Deletes a scan of a given index and and notifies
+     * adapter for ListView.
+     */
     private fun deleteScanAtIndex(index: Int) {
         scanResultList.removeAt(index)
         adapter.notifyDataSetChanged()
         storeScanResultToJson()
     }
 
+    /**
+     * Reads scans stored on local storage as JSON and binds data to adapter.
+     */
     private fun initScanResultList() {
         readScanResultFromJson()
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, scanResultList)
         binding.scanResultList.adapter = adapter
     }
 
+    /**
+     * Sets on click listener for list items.
+     * On simple click, navigates to fragment for editing text.
+     * On long click, displays popup for deleting the item.
+     */
     private fun setListListener() {
         binding.scanResultList.setOnItemClickListener { _, _, position, _ ->
             val clickedItem = scanResultList[position] // Get the clicked item data
@@ -87,6 +103,9 @@ class FirstFragment : Fragment() {
         }
     }
 
+    /**
+     * Read JSON file from local memory containing scanned text.
+     */
     private fun readScanResultFromJson() {
         scanResultList = mutableListOf()
 
@@ -105,6 +124,9 @@ class FirstFragment : Fragment() {
         }
     }
 
+    /**
+     * Write scanned text to JSON and store in local memory with MODE_PRIVATE.
+     */
     private fun storeScanResultToJson() {
         val jsonArray = JSONArray(scanResultList)
 
