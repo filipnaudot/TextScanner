@@ -37,6 +37,10 @@ class MainActivity : AppCompatActivity() {
         setListeners()
     }
 
+    /**
+     * Launch fragment for editing text from a scan.
+     * @param text The scanned text.
+     */
     private fun launchEditFragment(text: String?) {
         Log.d(TAG, "TEXT: $text")
         // Navigate to SecondFragment and pass the scanned text as an argument
@@ -50,23 +54,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Set listeners for "new scan"-fab and destination listener.
+     */
     private fun setListeners() {
         setFabListener()
         setDestinationChangedListener()
     }
 
+    /**
+     * Sets on click listener on "new scan"-fab.
+     * Launches the CameraX activity.
+     */
     private fun setFabListener() {
         binding.fab.setOnClickListener {
             pictureActivity.launch(Unit)
         }
     }
 
+    /**
+     * Set the visibility for the toolbar menu.
+     * Used to hide settings button while in settings.
+     */
     private fun showToolbarMenu(status: Boolean) {
         val menu = binding.toolbar.menu
         val menuItem = menu.findItem(R.id.action_settings)
         menuItem.isVisible = status
     }
 
+    /**
+     * Sets destination listener. Used to determine what
+     * UI-elements should be visible.
+     */
     private fun setDestinationChangedListener() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (toolbarMenuInitialized) {
@@ -87,16 +106,20 @@ class MainActivity : AppCompatActivity() {
         toolbarMenuInitialized = true
     }
 
+    /**
+     * Inflate the menu in toolbar. Adds menu items to the
+     * action bar, settings item in this case.
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
+    /**
+     * Handles action bar item clicks. Click on home/up-button is
+     * automatically handled if parent activity is specified in AndroidManifest.xml.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> {
                 findNavController(R.id.nav_host_fragment_content_main)
@@ -107,6 +130,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * This function is called when the user presses the "up" button in the app's navigation bar.
+     *
+     * @return true if the navigation action was handled successfully, otherwise false.
+     */
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
