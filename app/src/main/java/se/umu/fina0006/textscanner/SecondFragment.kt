@@ -19,8 +19,6 @@ import se.umu.fina0006.textscanner.databinding.FragmentSecondBinding
 class SecondFragment : Fragment() {
     private var _binding: FragmentSecondBinding? = null
     private val sharedViewModel: SharedViewModel by activityViewModels()
-
-    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
