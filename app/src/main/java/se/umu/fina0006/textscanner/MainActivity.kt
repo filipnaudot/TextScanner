@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
     private fun showToolbarMenu(status: Boolean) {
         val menu = binding.toolbar.menu
         val menuItem = menu.findItem(R.id.action_settings)
-        menuItem.isVisible = status
+        if(menuItem != null) menuItem.isVisible = status
     }
 
     /**
