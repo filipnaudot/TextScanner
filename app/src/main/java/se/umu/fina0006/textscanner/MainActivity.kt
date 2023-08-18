@@ -114,7 +114,11 @@ class MainActivity : AppCompatActivity() {
                         fabVisible = false
                         showToolbarMenu(true)
                     }
-                    R.id.SettingsFragment -> showToolbarMenu(false)
+                    R.id.SettingsFragment -> {
+                        showToolbarMenu(false)
+                        binding.fab.hide()
+                        fabVisible = false
+                    }
                     else -> {
                         binding.fab.hide()
                         fabVisible = false
