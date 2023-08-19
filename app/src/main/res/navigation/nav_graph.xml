@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/ListFragment"
         android:name="se.umu.fina0006.textscanner.ListFragment"
-        android:label="@string/first_fragment_label"
+        android:label="@string/list_fragment_label"
         tools:layout="@layout/fragment_first">
 
         <action
@@ -21,7 +21,7 @@
     <fragment
         android:id="@+id/EditFragment"
         android:name="se.umu.fina0006.textscanner.EditFragment"
-        android:label="@string/second_fragment_label"
+        android:label="@string/edit_fragment_label"
         tools:layout="@layout/fragment_second">
 
         <action

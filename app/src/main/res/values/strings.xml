@@ -9,8 +9,8 @@
 
 
     <!-- Strings used for (example) fragments -->
-    <string name="first_fragment_label">TextScanner</string>
-    <string name="second_fragment_label">Scan result</string>
+    <string name="list_fragment_label">TextScanner</string>
+    <string name="edit_fragment_label">Scan result</string>
     <string name="settings_fragment_label">Settings</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
