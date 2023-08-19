@@ -16,7 +16,7 @@ import androidx.preference.PreferenceManager
 import se.umu.fina0006.textscanner.databinding.FragmentSecondBinding
 
 
-class SecondFragment : Fragment() {
+class EditFragment : Fragment() {
     private var _binding: FragmentSecondBinding? = null
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val binding get() = _binding!!

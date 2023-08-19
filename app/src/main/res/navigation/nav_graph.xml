@@ -13,14 +13,14 @@
 
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            app:destination="@id/EditFragment" />
         <action
             android:id="@+id/action_FirstFragment_to_SettingsFragment"
             app:destination="@id/SettingsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="se.umu.fina0006.textscanner.SecondFragment"
+        android:id="@+id/EditFragment"
+        android:name="se.umu.fina0006.textscanner.EditFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
 

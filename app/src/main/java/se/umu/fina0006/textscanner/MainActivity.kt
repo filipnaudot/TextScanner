@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
                         fabVisible = true
                         showToolbarMenu(true)
                     }
-                    R.id.SecondFragment -> {
+                    R.id.EditFragment -> {
                         binding.fab.hide()
                         fabVisible = false
                         showToolbarMenu(true)
