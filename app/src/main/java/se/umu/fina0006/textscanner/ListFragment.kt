@@ -12,12 +12,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import org.json.JSONArray
-import se.umu.fina0006.textscanner.databinding.FragmentFirstBinding
+import se.umu.fina0006.textscanner.databinding.FragmentListBinding
 import java.io.IOException
 
 
 class ListFragment : Fragment() {
-    private var _binding: FragmentFirstBinding? = null
+    private var _binding: FragmentListBinding? = null
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var scanResultList = mutableListOf<String>()
     private lateinit var adapter: ArrayAdapter<String>
@@ -28,7 +28,7 @@ class ListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentFirstBinding.inflate(inflater, container, false)
+        _binding = FragmentListBinding.inflate(inflater, container, false)
         return binding.root
     }
 

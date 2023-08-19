@@ -13,11 +13,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.preference.PreferenceManager
-import se.umu.fina0006.textscanner.databinding.FragmentSecondBinding
+import se.umu.fina0006.textscanner.databinding.FragmentEditBinding
 
 
 class EditFragment : Fragment() {
-    private var _binding: FragmentSecondBinding? = null
+    private var _binding: FragmentEditBinding? = null
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val binding get() = _binding!!
 
@@ -26,7 +26,7 @@ class EditFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentSecondBinding.inflate(inflater, container, false)
+        _binding = FragmentEditBinding.inflate(inflater, container, false)
         return binding.root
 
     }
