@@ -16,7 +16,7 @@ import se.umu.fina0006.textscanner.databinding.FragmentFirstBinding
 import java.io.IOException
 
 
-class FirstFragment : Fragment() {
+class ListFragment : Fragment() {
     private var _binding: FragmentFirstBinding? = null
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var scanResultList = mutableListOf<String>()

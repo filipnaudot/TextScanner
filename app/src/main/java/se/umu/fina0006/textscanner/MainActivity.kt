@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (toolbarMenuInitialized) {
                 when (destination.id) {
-                    R.id.FirstFragment -> {
+                    R.id.ListFragment -> {
                         binding.fab.show()
                         fabVisible = true
                         showToolbarMenu(true)
