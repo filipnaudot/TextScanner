@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                 "isSaved" to false,
             )
             findNavController(R.id.nav_host_fragment_content_main)
-                .navigate(R.id.action_FirstFragment_to_SecondFragment, bundle)
+                .navigate(R.id.action_ListFragment_to_EditFragment, bundle)
         }
     }
 

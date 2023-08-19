@@ -93,7 +93,7 @@ class ListFragment : Fragment() {
                 "isSaved" to true,
                 "index" to position,
             )
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment, bundle)
+            findNavController().navigate(R.id.action_ListFragment_to_EditFragment, bundle)
         }
 
         binding.scanResultList.setOnItemLongClickListener { _, _, position, _ ->

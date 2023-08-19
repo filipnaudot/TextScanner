@@ -12,10 +12,10 @@
         tools:layout="@layout/fragment_first">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            android:id="@+id/action_ListFragment_to_EditFragment"
             app:destination="@id/EditFragment" />
         <action
-            android:id="@+id/action_FirstFragment_to_SettingsFragment"
+            android:id="@+id/action_ListFragment_to_SettingsFragment"
             app:destination="@id/SettingsFragment" />
     </fragment>
     <fragment
@@ -25,7 +25,7 @@
         tools:layout="@layout/fragment_second">
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            android:id="@+id/action_EditFragment_to_ListFragment"
             app:destination="@id/ListFragment" />
     </fragment>
     <fragment
